@@ -79,7 +79,7 @@ export default function HomePageContent() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Sensor Monitoring System
+                  Sensor Monitoring Systemmm
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
                   Monitor your environmental sensors in real-time. View temperature, humidity, and air quality data.
