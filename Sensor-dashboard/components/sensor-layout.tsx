@@ -22,6 +22,7 @@ export default function SensorLayout({
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-10 w-full border-b bg-background">
         <div className="container flex h-16 items-center">
+          {/* LOGO Y NAVEGACIÓN DESKTOP */}
           <div className="mr-4 hidden md:flex">
             <Link href="/" className="mr-6 flex items-center space-x-2">
               <span className="font-bold text-xl">Sensor Dashboard</span>
@@ -36,13 +37,20 @@ export default function SensorLayout({
               <Link href="/air-quality" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 Air Quality
               </Link>
+              <Link href="/speed" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Speed
+              </Link>
             </nav>
           </div>
+
+          {/* LOGO MOBILE */}
           <div className="flex md:hidden">
             <Link href="/" className="mr-6 flex items-center space-x-2">
               <span className="font-bold">Sensor Dashboard</span>
             </Link>
           </div>
+
+          {/* NAVEGACIÓN MOBILE */}
           <div className="flex flex-1 items-center justify-end space-x-4">
             <nav className="flex items-center space-x-2 md:hidden">
               <Link
@@ -63,10 +71,18 @@ export default function SensorLayout({
               >
                 Air Quality
               </Link>
+              <Link
+                href="/speed"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Speed
+              </Link>
             </nav>
           </div>
         </div>
       </header>
+
+      {/* CONTENIDO PRINCIPAL */}
       <main className="flex-1">
         <section className="w-full py-12">
           <div className="container px-4 md:px-6">

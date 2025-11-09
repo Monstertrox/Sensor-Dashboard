@@ -29,7 +29,7 @@ export default function DebugPanel() {
 
       const data = await response.json()
       setDebugInfo(data)
-    } catch (error) {
+    } catch (error: any) {
       setDebugInfo({
         success: false,
         error: error.message,
@@ -59,7 +59,7 @@ export default function DebugPanel() {
 
       const data = await response.json()
       setDebugInfo(data)
-    } catch (error) {
+    } catch (error: any) {
       setDebugInfo({
         success: false,
         error: error.message,
@@ -75,6 +75,7 @@ export default function DebugPanel() {
         <CardTitle>Neon Database Debug Panel</CardTitle>
         <CardDescription>Test connection and insert data to Neon PostgreSQL</CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-6">
         <div className="flex gap-4">
           <Button onClick={testConnection} disabled={isLoading}>
@@ -84,7 +85,9 @@ export default function DebugPanel() {
 
         <div className="space-y-4">
           <h4 className="font-semibold">Insert Test Data</h4>
+
           <div className="grid grid-cols-2 gap-4">
+            {/* Node ID */}
             <div>
               <Label htmlFor="nodo_id">Node ID</Label>
               <Input
@@ -93,6 +96,8 @@ export default function DebugPanel() {
                 onChange={(e) => setInsertData({ ...insertData, nodo_id: e.target.value })}
               />
             </div>
+
+            {/* Sensor Type */}
             <div>
               <Label htmlFor="tipo">Sensor Type</Label>
               <select
@@ -104,8 +109,11 @@ export default function DebugPanel() {
                 <option value="temperature">Temperature</option>
                 <option value="humedad">Humidity</option>
                 <option value="calidad">Air Quality</option>
+                <option value="speed">Speed</option> {/* ✅ Nuevo tipo agregado */}
               </select>
             </div>
+
+            {/* Value */}
             <div>
               <Label htmlFor="valor">Value</Label>
               <Input
@@ -116,6 +124,8 @@ export default function DebugPanel() {
                 onChange={(e) => setInsertData({ ...insertData, valor: e.target.value })}
               />
             </div>
+
+            {/* Insert Button */}
             <div className="flex items-end">
               <Button onClick={insertTestData} disabled={isLoading} className="w-full">
                 {isLoading ? "Inserting..." : "Insert Data"}
@@ -124,6 +134,7 @@ export default function DebugPanel() {
           </div>
         </div>
 
+        {/* Debug Info */}
         {debugInfo && (
           <div className="space-y-4">
             <Alert variant={debugInfo.success ? "default" : "destructive"}>
