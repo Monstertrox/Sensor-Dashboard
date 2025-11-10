@@ -121,7 +121,7 @@ export default function HomePageContent() {
               <SensorCard
                 link="/speed"
                 title="Speed"
-                value={speedValue.toFixed(2) + " RPM"}
+                value={speedValue.toFixed(2) + "m/s²"}
                 color="text-purple-500"
                 isLoading={isLoading}
                 description="Monitor the rotational speed of the motor"
