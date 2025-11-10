@@ -16,7 +16,7 @@ export default function SpeedGauge({ value = 0 }: SpeedGaugeProps) {
   return (
     <div className="flex flex-col items-center justify-center space-y-2">
       <div className="text-4xl font-semibold text-blue-600">
-        {displayValue.toFixed(0)} RPM
+        {displayValue.toFixed(2)} m/s²
       </div>
       <div className="w-64 h-4 bg-gray-200 rounded-full overflow-hidden">
         <div
