@@ -9,34 +9,25 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-interface SpeedDataPoint {
-  time: string;
-  value: number;
-}
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 
 interface SpeedChartProps {
-  data?: SpeedDataPoint[];
+  data?: { time: string; value: number }[];
 }
 
 export default function SpeedChart({ data = [] }: SpeedChartProps) {
+  // 🔒 Validar array antes de renderizar
+  const safeData = Array.isArray(data) ? data : [];
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Speed History</CardTitle>
-        <CardDescription>Speed readings over time</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
+            <LineChart data={safeData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="time" />
               <YAxis unit=" RPM" />

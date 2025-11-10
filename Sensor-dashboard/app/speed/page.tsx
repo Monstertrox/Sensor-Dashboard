@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic"; // Evita error en Vercel por prerender
+export const dynamic = "force-dynamic"; // evita prerendering estático
 
 import { Suspense } from "react";
 import SpeedPageContent from "@/components/speed-page-content";
