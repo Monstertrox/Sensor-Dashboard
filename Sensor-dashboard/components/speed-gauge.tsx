@@ -1,49 +1,29 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react"
 
 interface SpeedGaugeProps {
-  value: number;
-  min?: number;
-  max?: number;
+  value?: number
 }
 
-export default function SpeedGauge({ value, min = 0, max = 3000 }: SpeedGaugeProps) {
-  const [displayValue, setDisplayValue] = useState(value);
+export default function SpeedGauge({ value = 0 }: SpeedGaugeProps) {
+  const [displayValue, setDisplayValue] = useState(0)
 
   useEffect(() => {
-    const timeout = setTimeout(() => setDisplayValue(value), 200);
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  const percentage = ((displayValue - min) / (max - min)) * 100;
+    setDisplayValue(value)
+  }, [value])
 
   return (
-    <div className="flex flex-col items-center space-y-2">
-      <div className="relative w-40 h-40">
-        <svg viewBox="0 0 100 50" className="w-full h-full">
-          <path
-            d="M10 50 A40 40 0 0 1 90 50"
-            fill="none"
-            stroke="#e5e7eb"
-            strokeWidth="8"
-          />
-          <motion.path
-            d="M10 50 A40 40 0 0 1 90 50"
-            fill="none"
-            stroke="#3b82f6"
-            strokeWidth="8"
-            strokeDasharray="126"
-            strokeDashoffset={126 - (percentage * 126) / 100}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-3xl font-bold">{displayValue.toFixed(0)}</span>
-        </div>
+    <div className="flex flex-col items-center justify-center space-y-2">
+      <div className="text-4xl font-semibold text-blue-600">
+        {displayValue.toFixed(0)} RPM
       </div>
-      <p className="text-gray-500 text-sm">RPM</p>
+      <div className="w-64 h-4 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="h-4 bg-blue-500 transition-all duration-500"
+          style={{ width: `${Math.min(displayValue / 40, 100)}%` }}
+        ></div>
+      </div>
     </div>
-  );
+  )
 }
