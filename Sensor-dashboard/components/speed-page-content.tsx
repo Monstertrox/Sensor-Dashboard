@@ -1,36 +1,30 @@
-"use client";
+"use client"
 
-import SensorLayout from "@/components/sensor-layout";
-import SpeedSensor from "@/components/speed-sensor";
-import SpeedChart from "@/components/speed-chart";
+import SpeedChart from "./speed-chart"
+import SpeedSensor from "./speed-sensor"
+import SpeedGauge from "./speed-gauge"
+import { useEffect, useState } from "react"
 
 export default function SpeedPageContent() {
-  // 🔹 Datos simulados con valor por defecto
-  const data = [
-    { time: "07:00", value: 1200 },
-    { time: "07:01", value: 1300 },
-    { time: "07:02", value: 1500 },
-    { time: "07:03", value: 1700 },
-  ];
+  const [speedData, setSpeedData] = useState<{ time: string; speed: number }[]>([])
 
-  const currentSpeed = data?.[data.length - 1]?.value ?? 0;
+  useEffect(() => {
+    // Simulación o fetch real
+    const interval = setInterval(() => {
+      setSpeedData(prev => [
+        ...prev.slice(-20),
+        { time: new Date().toLocaleTimeString(), speed: Math.random() * 3000 },
+      ])
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
-    <SensorLayout
-      title="Speed Sensor"
-      description="Monitor real-time rotational speed (RPM)"
-      currentValue={currentSpeed}
-      unit="RPM"
-      lastUpdated={new Date().toISOString()}
-    >
-      <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
-        <div className="rounded-lg border p-6">
-          <SpeedSensor value={currentSpeed} min={0} max={3000} />
-        </div>
-        <div className="rounded-lg border p-6">
-          <SpeedChart data={Array.isArray(data) ? data : []} />
-        </div>
-      </div>
-    </SensorLayout>
-  );
+    <div className="space-y-6 p-4">
+      <h1 className="text-2xl font-semibold text-center">Sensor de Velocidad</h1>
+      <SpeedGauge value={speedData.at(-1)?.speed ?? 0} />
+      <SpeedChart data={speedData} />
+      <SpeedSensor value={speedData.at(-1)?.speed ?? 0} />
+    </div>
+  )
 }

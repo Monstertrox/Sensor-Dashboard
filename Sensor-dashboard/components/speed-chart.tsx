@@ -1,52 +1,30 @@
-"use client";
+"use client"
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
 interface SpeedChartProps {
-  data?: { time: string; value: number }[];
+  data?: { time: string; speed: number }[]
 }
 
 export default function SpeedChart({ data = [] }: SpeedChartProps) {
-  // 🔒 Validar array antes de renderizar
-  const safeData = Array.isArray(data) ? data : [];
+  // Protección: si no hay datos, mostramos un mensaje seguro
+  if (!Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="text-center text-gray-400 p-4">
+        No hay datos disponibles de velocidad.
+      </div>
+    )
+  }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Speed History</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={safeData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis unit=" RPM" />
-              <Tooltip
-                formatter={(value: number) => [`${value} RPM`, "Speed"]}
-                labelFormatter={(label) => `Time: ${label}`}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#2563eb"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </CardContent>
-    </Card>
-  );
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="time" />
+        <YAxis label={{ value: "Velocidad (RPM)", angle: -90, position: "insideLeft" }} />
+        <Tooltip />
+        <Line type="monotone" dataKey="speed" stroke="#8884d8" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ResponsiveContainer>
+  )
 }
