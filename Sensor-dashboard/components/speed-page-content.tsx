@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import SpeedChart from "./speed-chart"
 import SpeedGauge from "./speed-gauge"
 import SpeedSensor from "./speed-sensor"
+import SensorLayout from "@/components/sensor-layout"
 
 export default function SpeedPageContent() {
   const [speedData, setSpeedData] = useState<{ time: string; speed: number }[]>([])
@@ -11,7 +12,7 @@ export default function SpeedPageContent() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const acceleration = Math.random() * 20 // simulación entre 0 y 20 m/s²
+      const acceleration = Math.random() * 20 // Simula 0–20 m/s²
       setCurrentSpeed(acceleration)
       setSpeedData(prev => [
         ...prev.slice(-20),
@@ -23,11 +24,18 @@ export default function SpeedPageContent() {
   }, [])
 
   return (
-    <div className="space-y-6 p-6">
-      <h1 className="text-2xl font-semibold text-center">Sensor de Aceleración</h1>
-      <SpeedGauge value={currentSpeed} />
-      <SpeedChart data={speedData} />
-      <SpeedSensor value={currentSpeed} />
-    </div>
+    <SensorLayout
+      title="Sensor de Aceleración"
+      description="Lecturas en tiempo real de la aceleración del sistema."
+      currentValue={currentSpeed}
+      unit="m/s²"
+      lastUpdated={new Date().toISOString()}
+    >
+      <div className="grid gap-6 mt-6">
+        <SpeedGauge value={currentSpeed} />
+        <SpeedChart data={speedData} />
+        <SpeedSensor value={currentSpeed} />
+      </div>
+    </SensorLayout>
   )
 }

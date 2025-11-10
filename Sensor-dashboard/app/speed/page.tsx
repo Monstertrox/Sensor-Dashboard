@@ -1,9 +1,10 @@
+import { Suspense } from "react"
 import SpeedPageContent from "@/components/speed-page-content"
 
 export default function SpeedPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <Suspense fallback={<div>Cargando datos de aceleración...</div>}>
       <SpeedPageContent />
-    </main>
+    </Suspense>
   )
 }
