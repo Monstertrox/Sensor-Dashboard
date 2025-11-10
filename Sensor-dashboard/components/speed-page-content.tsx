@@ -1,29 +1,47 @@
-"use client"
+"use client";
 
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
+import SensorLayout from "@/components/sensor-layout";
+import SpeedSensor from "@/components/speed-sensor";
+import SpeedChart from "@/components/speed-chart";
 
-interface SpeedChartProps {
-  data: number[]
-}
+export default function SpeedPageContent() {
+  // 🔹 Simulación de datos de ejemplo
+  const data = [
+    { time: "07:00 p.m.", value: 1500 },
+    { time: "07:01 p.m.", value: 1600 },
+    { time: "07:02 p.m.", value: 1800 },
+    { time: "07:03 p.m.", value: 1700 },
+    { time: "07:04 p.m.", value: 1750 },
+    { time: "07:05 p.m.", value: 1650 },
+  ];
 
-export default function SpeedChart({ data }: SpeedChartProps) {
-  const chartData = data.map((value, index) => ({
-    name: `${index + 1}`,
-    speed: value,
-  }))
+  const currentSpeed = data[data.length - 1]?.value ?? 0;
 
   return (
-    <div className="w-full h-80 bg-white dark:bg-gray-900 rounded-2xl shadow p-4">
-      <h2 className="text-lg font-semibold mb-2">Histórico de Velocidad</h2>
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="speed" stroke="#2563eb" strokeWidth={2} dot={false} />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  )
+    <SensorLayout
+      title="Speed Sensor"
+      description="Monitor real-time rotational speed (RPM)"
+      currentValue={currentSpeed}
+      unit="RPM"
+      lastUpdated={new Date().toISOString()}
+    >
+      <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
+        {/* Sensor gauge */}
+        <div className="flex flex-col space-y-4">
+          <h2 className="text-2xl font-bold">Sensor Readings</h2>
+          <div className="rounded-lg border p-6">
+            <SpeedSensor value={currentSpeed} min={0} max={3000} />
+          </div>
+        </div>
+
+        {/* Historical data */}
+        <div className="flex flex-col space-y-4">
+          <h2 className="text-2xl font-bold">Historical Data</h2>
+          <div className="rounded-lg border p-6">
+            <SpeedChart data={data ?? []} />
+          </div>
+        </div>
+      </div>
+    </SensorLayout>
+  );
 }

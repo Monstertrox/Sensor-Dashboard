@@ -1,29 +1,61 @@
-"use client"
+"use client";
 
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-interface SpeedChartProps {
-  data: number[]
+interface SpeedDataPoint {
+  time: string;
+  value: number;
 }
 
-export default function SpeedChart({ data }: SpeedChartProps) {
-  const chartData = data.map((value, index) => ({
-    name: `${index + 1}`,
-    speed: value,
-  }))
+interface SpeedChartProps {
+  data?: SpeedDataPoint[];
+}
 
+export default function SpeedChart({ data = [] }: SpeedChartProps) {
   return (
-    <div className="w-full h-80 bg-white dark:bg-gray-900 rounded-2xl shadow p-4">
-      <h2 className="text-lg font-semibold mb-2">Histórico de Velocidad</h2>
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="speed" stroke="#2563eb" strokeWidth={2} dot={false} />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  )
+    <Card>
+      <CardHeader>
+        <CardTitle>Speed History</CardTitle>
+        <CardDescription>Speed readings over time</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis unit=" RPM" />
+              <Tooltip
+                formatter={(value: number) => [`${value} RPM`, "Speed"]}
+                labelFormatter={(label) => `Time: ${label}`}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#2563eb"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

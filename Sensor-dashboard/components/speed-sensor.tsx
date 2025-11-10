@@ -1,52 +1,48 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { SpeedChart } from "@/components/speed-chart"
-import { SpeedGauge } from "@/components/speed-gauge"
+import SpeedGauge from "@/components/speed-gauge";
+import { useState } from "react";
 
-export default function SpeedSensor() {
-  const [speed, setSpeed] = useState<number>(0)
-  const [data, setData] = useState<{ time: string; value: number }[]>([])
+interface SpeedSensorProps {
+  value: number;
+  min?: number;
+  max?: number;
+}
 
-  useEffect(() => {
-    // Simulación: genera datos aleatorios cada 2 segundos
-    const interval = setInterval(() => {
-      const newSpeed = Math.floor(Math.random() * 100) // 0–100 km/h
-      setSpeed(newSpeed)
-      setData((prev) => [
-        ...prev.slice(-9),
-        { time: new Date().toLocaleTimeString(), value: newSpeed },
-      ])
-    }, 2000)
-
-    return () => clearInterval(interval)
-  }, [])
+export default function SpeedSensor({ value, min = 0, max = 3000 }: SpeedSensorProps) {
+  const [manualSpeed, setManualSpeed] = useState(value);
 
   return (
-    <Card className="shadow-lg border border-gray-200 bg-white/80 backdrop-blur-lg rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold text-gray-800">
-          Sensor de Velocidad
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4 md:grid-cols-2 items-center">
-        {/* Gauge circular */}
-        <div className="flex justify-center">
-          <SpeedGauge speed={speed} />
-        </div>
+    <div className="flex flex-col space-y-6">
+      <div className="flex flex-col items-center">
+        <h3 className="text-lg font-semibold mb-2">Speed Sensor</h3>
+        <SpeedGauge value={manualSpeed} min={min} max={max} />
+      </div>
 
-        {/* Gráfica de historial */}
-        <div className="h-48">
-          <SpeedChart data={data} />
+      {/* Control manual */}
+      <div>
+        <label className="text-sm font-medium">Adjust Speed</label>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={manualSpeed}
+          onChange={(e) => setManualSpeed(Number(e.target.value))}
+          className="w-full accent-blue-500"
+        />
+        <div className="flex items-center space-x-2 mt-2">
+          <input
+            type="number"
+            min={min}
+            max={max}
+            value={manualSpeed}
+            onChange={(e) => setManualSpeed(Number(e.target.value))}
+            className="w-20 border rounded p-1 text-center"
+          />
+          <span className="text-sm text-gray-600">RPM</span>
         </div>
-
-        {/* Valor actual */}
-        <div className="col-span-2 text-center mt-4">
-          <p className="text-4xl font-bold text-blue-600">{speed} km/h</p>
-          <p className="text-sm text-gray-500">Velocidad actual</p>
-        </div>
-      </CardContent>
-    </Card>
-  )
+        <p className="text-xs text-gray-400 mt-2">Range: {min} - {max} RPM</p>
+      </div>
+    </div>
+  );
 }
