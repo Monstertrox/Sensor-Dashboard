@@ -11,12 +11,11 @@ export default function DebugPanel() {
   const [debugInfo, setDebugInfo] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [insertData, setInsertData] = useState({
-    nodo_id: "distance_node_001",
-    tipo: "distance_sensor",
-    valor: "10.0", // Valor inicial dentro del rango
+    nodo_id: "test_node_001",
+    tipo: "temperature",
+    valor: "25.5",
   })
 
-  // 🔍 Test connection to API
   const testConnection = async () => {
     setIsLoading(true)
     try {
@@ -40,7 +39,6 @@ export default function DebugPanel() {
     }
   }
 
-  // 🧪 Insert sensor test data
   const insertTestData = async () => {
     setIsLoading(true)
     try {
@@ -71,47 +69,46 @@ export default function DebugPanel() {
     }
   }
 
-  // 🔧 Configuración dinámica según tipo de sensor
-  const sensorConfigs: Record<
-    string,
-    { label: string; unit: string; min: number; max: number; description: string }
-  > = {
-    distance_sensor: {
-      label: "Distance (cm)",
-      unit: "cm",
-      min: 4,
-      max: 15,
-      description: "Send distance readings between 4–15 cm",
-    },
-    noise_level: {
-      label: "Noise Level (dB)",
-      unit: "dB",
-      min: 30,
-      max: 120,
-      description: "Send simulated noise level readings between 30–120 dB",
-    },
+  // ✅ Ajustar automáticamente los rangos según el tipo de sensor
+  const handleTipoChange = (tipo: string) => {
+    let valor = "0"
+    switch (tipo) {
+      case "distance":
+        valor = "10" // valor inicial dentro de 4–15 cm
+        break
+      case "noise":
+        valor = "512" // valor inicial dentro de 0–1024
+        break
+      case "temperature":
+        valor = "25.5"
+        break
+      case "humedad":
+        valor = "60"
+        break
+      case "calidad":
+        valor = "80"
+        break
+      case "speed":
+        valor = "1.2"
+        break
+    }
+    setInsertData({ ...insertData, tipo, valor })
   }
-
-  const currentConfig = sensorConfigs[insertData.tipo] || sensorConfigs.distance_sensor
 
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Sensor Debug Panel</CardTitle>
-        <CardDescription>
-          Test database connection and send sensor readings (Distance or Noise Level)
-        </CardDescription>
+        <CardTitle>Neon Database Debug Panel</CardTitle>
+        <CardDescription>Test connection and insert data to Neon PostgreSQL</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* 🔌 Test connection */}
         <div className="flex gap-4">
           <Button onClick={testConnection} disabled={isLoading}>
             {isLoading ? "Testing..." : "Test DB Connection"}
           </Button>
         </div>
 
-        {/* 📡 Insert data */}
         <div className="space-y-4">
           <h4 className="font-semibold">Insert Test Data</h4>
 
@@ -132,38 +129,30 @@ export default function DebugPanel() {
               <select
                 id="tipo"
                 value={insertData.tipo}
-                onChange={(e) => {
-                  const tipo = e.target.value
-                  const config = sensorConfigs[tipo]
-                  setInsertData({
-                    ...insertData,
-                    tipo,
-                    valor: config ? config.min.toString() : "0",
-                    nodo_id: tipo === "noise_level" ? "noise_node_001" : "distance_node_001",
-                  })
-                }}
+                onChange={(e) => handleTipoChange(e.target.value)}
                 className="w-full p-2 border rounded"
               >
-                <option value="distance_sensor">Distance</option>
-                <option value="noise_level">Noise Level</option>
+                <option value="temperature">Temperature</option>
+                <option value="humedad">Humidity</option>
+                <option value="calidad">Air Quality</option>
+                <option value="speed">Speed</option>
+                <option value="distance">Distance (4–15 cm)</option> {/* ✅ Nuevo */}
+                <option value="noise">Noise (0–1024)</option> {/* ✅ Nuevo */}
               </select>
             </div>
 
-            {/* Sensor Value */}
+            {/* Value */}
             <div>
-              <Label htmlFor="valor">{currentConfig.label}</Label>
+              <Label htmlFor="valor">Value</Label>
               <Input
                 id="valor"
                 type="number"
                 step="0.1"
-                min={currentConfig.min}
-                max={currentConfig.max}
                 value={insertData.valor}
                 onChange={(e) => setInsertData({ ...insertData, valor: e.target.value })}
+                min={insertData.tipo === "distance" ? 4 : insertData.tipo === "noise" ? 0 : undefined}
+                max={insertData.tipo === "distance" ? 15 : insertData.tipo === "noise" ? 1024 : undefined}
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                Range: {currentConfig.min}–{currentConfig.max} {currentConfig.unit}
-              </p>
             </div>
 
             {/* Insert Button */}
@@ -175,12 +164,12 @@ export default function DebugPanel() {
           </div>
         </div>
 
-        {/* 🧾 Debug output */}
+        {/* Debug Info */}
         {debugInfo && (
           <div className="space-y-4">
             <Alert variant={debugInfo.success ? "default" : "destructive"}>
               <AlertDescription>
-                Status: {debugInfo.success ? "✅ Success" : "❌ Failed"}
+                Status: {debugInfo.success ? "Success" : "Failed"}
                 {debugInfo.error && ` - ${debugInfo.error}`}
                 {debugInfo.message && ` - ${debugInfo.message}`}
               </AlertDescription>
@@ -200,4 +189,3 @@ export default function DebugPanel() {
     </Card>
   )
 }
-
