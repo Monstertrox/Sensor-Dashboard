@@ -9,8 +9,10 @@ import DebugPanel from "@/components/debug-panel"
 export default function HomePageContent() {
   const { data: sensorData, isLoading, error } = useSensorData()
 
-  // Obtener los últimos valores de cada tipo de sensor
-  const getLatestValue = (sensorType: "temperature" | "humidity" | "air_quality" | "distance") => {
+  // Obtener los últimos valores de cada tipo de sensor (agregamos noise_level)
+  const getLatestValue = (
+    sensorType: "temperature" | "humidity" | "air_quality" | "distance" | "noise_level"
+  ) => {
     if (!sensorData) return 0
     const filtered = sensorData.filter((reading) => reading.sensor_type === sensorType)
     if (filtered.length === 0) return 0
@@ -20,9 +22,10 @@ export default function HomePageContent() {
   const temperatureValue = getLatestValue("temperature")
   const humidityValue = getLatestValue("humidity")
   const airQualityValue = getLatestValue("air_quality")
-  const distanceValue = getLatestValue("distance") // 📏 Nueva variable: distancia
+  const distanceValue = getLatestValue("distance")
+  const noiseLevelValue = getLatestValue("noise_level") // 🔊 Nuevo sensor
 
-  // Verificar si estamos usando datos de fallback
+  // Verificar si estamos usando datos simulados
   const isUsingFallback = sensorData?.some((reading) => reading.device_id?.includes("001")) || false
 
   return (
@@ -46,6 +49,10 @@ export default function HomePageContent() {
               <Link href="/distance" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 Distance
               </Link>
+              {/* 🔊 Nuevo enlace para Noise Level */}
+              <Link href="/noise-level" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Noise Level
+              </Link>
             </nav>
           </div>
         </div>
@@ -60,7 +67,8 @@ export default function HomePageContent() {
                   Sensor Monitoring System
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Monitor your environmental sensors in real-time. View temperature, humidity, air quality, and distance data.
+                  Monitor your environmental sensors in real-time. View temperature, humidity, air quality,
+                  distance, and noise data.
                 </p>
               </div>
               {!isLoading && (
@@ -83,7 +91,7 @@ export default function HomePageContent() {
             )}
 
             {/* Tarjetas de sensores */}
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-4 lg:gap-12 mt-12">
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-5 lg:gap-12 mt-12">
               {/* Temperature */}
               <SensorCard
                 link="/temperature"
@@ -117,7 +125,7 @@ export default function HomePageContent() {
                 iconPath="M7 15h10"
               />
 
-              {/* 📏 Distance */}
+              {/* Distance */}
               <SensorCard
                 link="/distance"
                 title="Distance"
@@ -125,7 +133,18 @@ export default function HomePageContent() {
                 color="text-purple-500"
                 isLoading={isLoading}
                 description="Measure distance between 4 cm and 15 cm in real-time"
-                iconPath="M4 12h16M4 12l4-4m-4 4l4 4" // Ícono tipo flechas
+                iconPath="M4 12h16M4 12l4-4m-4 4l4 4"
+              />
+
+              {/* 🔊 Noise Level */}
+              <SensorCard
+                link="/noise-level"
+                title="Noise Level"
+                value={noiseLevelValue.toFixed(1) + " dB"}
+                color="text-yellow-500"
+                isLoading={isLoading}
+                description="Monitor sound intensity levels in your environment"
+                iconPath="M11 5L6 9H2v6h4l5 4V5z"
               />
             </div>
 
@@ -169,3 +188,4 @@ function SensorCard({ link, title, value, color, isLoading, description, iconPat
     </Link>
   )
 }
+
