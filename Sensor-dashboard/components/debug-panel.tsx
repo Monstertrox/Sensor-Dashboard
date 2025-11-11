@@ -7,15 +7,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export default function DistanceDebugPanel() {
+export default function DebugPanel() {
   const [debugInfo, setDebugInfo] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [insertData, setInsertData] = useState({
     nodo_id: "distance_node_001",
     tipo: "distance_sensor",
-    valor: "10.0", // Valor inicial dentro del rango de 4–15 cm
+    valor: "10.0", // Valor inicial dentro del rango
   })
 
+  // 🔍 Test connection to API
   const testConnection = async () => {
     setIsLoading(true)
     try {
@@ -39,6 +40,7 @@ export default function DistanceDebugPanel() {
     }
   }
 
+  // 🧪 Insert sensor test data
   const insertTestData = async () => {
     setIsLoading(true)
     try {
@@ -69,22 +71,49 @@ export default function DistanceDebugPanel() {
     }
   }
 
+  // 🔧 Configuración dinámica según tipo de sensor
+  const sensorConfigs: Record<
+    string,
+    { label: string; unit: string; min: number; max: number; description: string }
+  > = {
+    distance_sensor: {
+      label: "Distance (cm)",
+      unit: "cm",
+      min: 4,
+      max: 15,
+      description: "Send distance readings between 4–15 cm",
+    },
+    noise_level: {
+      label: "Noise Level (dB)",
+      unit: "dB",
+      min: 30,
+      max: 120,
+      description: "Send simulated noise level readings between 30–120 dB",
+    },
+  }
+
+  const currentConfig = sensorConfigs[insertData.tipo] || sensorConfigs.distance_sensor
+
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Distance Sensor Debug Panel</CardTitle>
-        <CardDescription>Test database connection and send distance readings (4–15 cm)</CardDescription>
+        <CardTitle>Sensor Debug Panel</CardTitle>
+        <CardDescription>
+          Test database connection and send sensor readings (Distance or Noise Level)
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {/* 🔌 Test connection */}
         <div className="flex gap-4">
           <Button onClick={testConnection} disabled={isLoading}>
             {isLoading ? "Testing..." : "Test DB Connection"}
           </Button>
         </div>
 
+        {/* 📡 Insert data */}
         <div className="space-y-4">
-          <h4 className="font-semibold">Insert Test Distance Data</h4>
+          <h4 className="font-semibold">Insert Test Data</h4>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Node ID */}
@@ -103,37 +132,50 @@ export default function DistanceDebugPanel() {
               <select
                 id="tipo"
                 value={insertData.tipo}
-                onChange={(e) => setInsertData({ ...insertData, tipo: e.target.value })}
+                onChange={(e) => {
+                  const tipo = e.target.value
+                  const config = sensorConfigs[tipo]
+                  setInsertData({
+                    ...insertData,
+                    tipo,
+                    valor: config ? config.min.toString() : "0",
+                    nodo_id: tipo === "noise_level" ? "noise_node_001" : "distance_node_001",
+                  })
+                }}
                 className="w-full p-2 border rounded"
               >
                 <option value="distance_sensor">Distance</option>
+                <option value="noise_level">Noise Level</option>
               </select>
             </div>
 
-            {/* Distance Value */}
+            {/* Sensor Value */}
             <div>
-              <Label htmlFor="valor">Distance (cm)</Label>
+              <Label htmlFor="valor">{currentConfig.label}</Label>
               <Input
                 id="valor"
                 type="number"
                 step="0.1"
-                min="4"
-                max="15"
+                min={currentConfig.min}
+                max={currentConfig.max}
                 value={insertData.valor}
                 onChange={(e) => setInsertData({ ...insertData, valor: e.target.value })}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Range: {currentConfig.min}–{currentConfig.max} {currentConfig.unit}
+              </p>
             </div>
 
             {/* Insert Button */}
             <div className="flex items-end">
               <Button onClick={insertTestData} disabled={isLoading} className="w-full">
-                {isLoading ? "Inserting..." : "Insert Distance"}
+                {isLoading ? "Inserting..." : "Insert Data"}
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Debug Info */}
+        {/* 🧾 Debug output */}
         {debugInfo && (
           <div className="space-y-4">
             <Alert variant={debugInfo.success ? "default" : "destructive"}>
@@ -158,3 +200,4 @@ export default function DistanceDebugPanel() {
     </Card>
   )
 }
+
