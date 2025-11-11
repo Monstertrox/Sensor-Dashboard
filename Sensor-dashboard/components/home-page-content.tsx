@@ -10,7 +10,7 @@ export default function HomePageContent() {
   const { data: sensorData, isLoading, error } = useSensorData()
 
   // Obtener los últimos valores de cada tipo de sensor
-  const getLatestValue = (sensorType: "temperature" | "humidity" | "air_quality" | "speed") => {
+  const getLatestValue = (sensorType: "temperature" | "humidity" | "air_quality" | "distance") => {
     if (!sensorData) return 0
     const filtered = sensorData.filter((reading) => reading.sensor_type === sensorType)
     if (filtered.length === 0) return 0
@@ -20,7 +20,7 @@ export default function HomePageContent() {
   const temperatureValue = getLatestValue("temperature")
   const humidityValue = getLatestValue("humidity")
   const airQualityValue = getLatestValue("air_quality")
-  const speedValue = getLatestValue("speed") // 🚀 Nueva variable de velocidad
+  const distanceValue = getLatestValue("distance") // 📏 Nueva variable: distancia
 
   // Verificar si estamos usando datos de fallback
   const isUsingFallback = sensorData?.some((reading) => reading.device_id?.includes("001")) || false
@@ -43,8 +43,8 @@ export default function HomePageContent() {
               <Link href="/air-quality" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 Air Quality
               </Link>
-              <Link href="/speed" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                Speed
+              <Link href="/distance" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Distance
               </Link>
             </nav>
           </div>
@@ -60,7 +60,7 @@ export default function HomePageContent() {
                   Sensor Monitoring System
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Monitor your environmental sensors in real-time. View temperature, humidity, air quality, and speed data.
+                  Monitor your environmental sensors in real-time. View temperature, humidity, air quality, and distance data.
                 </p>
               </div>
               {!isLoading && (
@@ -117,15 +117,15 @@ export default function HomePageContent() {
                 iconPath="M7 15h10"
               />
 
-              {/* 🚀 Speed */}
+              {/* 📏 Distance */}
               <SensorCard
-                link="/speed"
-                title="Speed"
-                value={speedValue.toFixed(2) + "m/s²"}
+                link="/distance"
+                title="Distance"
+                value={distanceValue.toFixed(2) + " cm"}
                 color="text-purple-500"
                 isLoading={isLoading}
-                description="Monitor the rotational speed of the motor"
-                iconPath="M12 2a10 10 0 1 1-10 10"
+                description="Measure distance between 4 cm and 15 cm in real-time"
+                iconPath="M4 12h16M4 12l4-4m-4 4l4 4" // Ícono tipo flechas
               />
             </div>
 
