@@ -22,5 +22,3 @@ IoT system for monitoring environmental conditions using:
 ## Link Website
 
 - https://v0-temperature-sensor-page.vercel.app/
-
-Prueba Vercel
