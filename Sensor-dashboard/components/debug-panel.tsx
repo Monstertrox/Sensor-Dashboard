@@ -7,13 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export default function DebugPanel() {
+export default function DistanceDebugPanel() {
   const [debugInfo, setDebugInfo] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [insertData, setInsertData] = useState({
-    nodo_id: "test_node_001",
-    tipo: "temperature",
-    valor: "25.5",
+    nodo_id: "distance_node_001",
+    tipo: "distance_sensor",
+    valor: "10.0", // Valor inicial dentro del rango de 4–15 cm
   })
 
   const testConnection = async () => {
@@ -72,8 +72,8 @@ export default function DebugPanel() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Neon Database Debug Panel</CardTitle>
-        <CardDescription>Test connection and insert data to Neon PostgreSQL</CardDescription>
+        <CardTitle>Distance Sensor Debug Panel</CardTitle>
+        <CardDescription>Test database connection and send distance readings (4–15 cm)</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -84,7 +84,7 @@ export default function DebugPanel() {
         </div>
 
         <div className="space-y-4">
-          <h4 className="font-semibold">Insert Test Data</h4>
+          <h4 className="font-semibold">Insert Test Distance Data</h4>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Node ID */}
@@ -106,20 +106,19 @@ export default function DebugPanel() {
                 onChange={(e) => setInsertData({ ...insertData, tipo: e.target.value })}
                 className="w-full p-2 border rounded"
               >
-                <option value="temperature">Temperature</option>
-                <option value="humedad">Humidity</option>
-                <option value="calidad">Air Quality</option>
-                <option value="speed">Speed</option> {/* ✅ Nuevo tipo agregado */}
+                <option value="distance_sensor">Distance</option>
               </select>
             </div>
 
-            {/* Value */}
+            {/* Distance Value */}
             <div>
-              <Label htmlFor="valor">Value</Label>
+              <Label htmlFor="valor">Distance (cm)</Label>
               <Input
                 id="valor"
                 type="number"
                 step="0.1"
+                min="4"
+                max="15"
                 value={insertData.valor}
                 onChange={(e) => setInsertData({ ...insertData, valor: e.target.value })}
               />
@@ -128,7 +127,7 @@ export default function DebugPanel() {
             {/* Insert Button */}
             <div className="flex items-end">
               <Button onClick={insertTestData} disabled={isLoading} className="w-full">
-                {isLoading ? "Inserting..." : "Insert Data"}
+                {isLoading ? "Inserting..." : "Insert Distance"}
               </Button>
             </div>
           </div>
@@ -139,7 +138,7 @@ export default function DebugPanel() {
           <div className="space-y-4">
             <Alert variant={debugInfo.success ? "default" : "destructive"}>
               <AlertDescription>
-                Status: {debugInfo.success ? "Success" : "Failed"}
+                Status: {debugInfo.success ? "✅ Success" : "❌ Failed"}
                 {debugInfo.error && ` - ${debugInfo.error}`}
                 {debugInfo.message && ` - ${debugInfo.message}`}
               </AlertDescription>
