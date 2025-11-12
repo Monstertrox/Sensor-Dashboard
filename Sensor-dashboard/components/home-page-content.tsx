@@ -23,7 +23,7 @@ export default function HomePageContent() {
   const humidityValue = getLatestValue("humidity")
   const airQualityValue = getLatestValue("air_quality")
   const distanceValue = getLatestValue("distance")
-  const noiseLevelValue = getLatestValue("noise_level") // 🔊 Nuevo sensor
+  const noiseLevelValue = getLatestValue("noise_level") 
 
   // Verificar si estamos usando datos simulados
   const isUsingFallback = sensorData?.some((reading) => reading.device_id?.includes("001")) || false
