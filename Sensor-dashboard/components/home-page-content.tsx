@@ -10,7 +10,7 @@ export default function HomePageContent() {
   const { data: sensorData, isLoading, error } = useSensorData()
 
   // Obtener los últimos valores de cada tipo de sensor
-  const getLatestValue = (sensorType: "temperature" | "humidity" | "air_quality") => {
+  const getLatestValue = (sensorType: string) => {
     if (!sensorData) return 0
     const filtered = sensorData.filter((reading) => reading.sensor_type === sensorType)
     if (filtered.length === 0) return 0
@@ -20,6 +20,10 @@ export default function HomePageContent() {
   const temperatureValue = getLatestValue("temperature")
   const humidityValue = getLatestValue("humidity")
   const airQualityValue = getLatestValue("air_quality")
+  const pressureValue = getLatestValue("pressure")
+  const windSpeedValue = getLatestValue("wind_speed")
+  const ultrasoundValue = getLatestValue("ultrasound")
+  const noiseValue = getLatestValue("noise")
 
   // Verificar si estamos usando datos de fallback
   const isUsingFallback = sensorData?.some((reading) => reading.device_id?.includes("001")) || false
@@ -42,6 +46,18 @@ export default function HomePageContent() {
               <Link href="/air-quality" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 Air Quality
               </Link>
+              <Link href="/pressure" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Pressure
+              </Link>
+              <Link href="/wind-speed" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Wind Speed
+              </Link>
+              <Link href="/ultrasound" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Ultrasound
+              </Link>
+              <Link href="/noise" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Noise
+              </Link>
             </nav>
           </div>
           <div className="flex md:hidden">
@@ -55,19 +71,43 @@ export default function HomePageContent() {
                 href="/temperature"
                 className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                Temperature
+                Temp
               </Link>
               <Link
                 href="/humidity"
                 className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                Humidity
+                Humid
               </Link>
               <Link
                 href="/air-quality"
                 className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
               >
-                Air Quality
+                Air
+              </Link>
+              <Link
+                href="/pressure"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Press
+              </Link>
+              <Link
+                href="/wind-speed"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Wind
+              </Link>
+              <Link
+                href="/ultrasound"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Ultra
+              </Link>
+              <Link
+                href="/noise"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Noise
               </Link>
             </nav>
           </div>
@@ -79,10 +119,10 @@ export default function HomePageContent() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Sensor Monitoring Systemmm
+                  Sensor Monitoring System
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Monitor your environmental sensoresss in real-time. View temperature, humidity, and air quality data.
+                  Monitor 7 environmental sensors in real-time. View temperature, humidity, air quality, pressure, wind speed, distance, and noise data.
                 </p>
               </div>
               {!isLoading && (
@@ -104,7 +144,7 @@ export default function HomePageContent() {
               </Alert>
             )}
 
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-12 mt-12">
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mt-12">
               <Link
                 href="/temperature"
                 className="group relative overflow-hidden rounded-lg border p-6 hover:border-primary"
@@ -132,9 +172,7 @@ export default function HomePageContent() {
                   ) : (
                     <div className="text-2xl font-bold text-orange-500">{temperatureValue.toFixed(1)}°C</div>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    View temperature readings and historical data
-                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
                 </div>
               </Link>
               <Link
@@ -164,9 +202,7 @@ export default function HomePageContent() {
                   ) : (
                     <div className="text-2xl font-bold text-blue-500">{humidityValue.toFixed(1)}%</div>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Monitor humidity levels in your environment
-                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
                 </div>
               </Link>
               <Link
@@ -198,9 +234,146 @@ export default function HomePageContent() {
                   ) : (
                     <div className="text-2xl font-bold text-green-500">{airQualityValue} AQI</div>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Check air quality metrics and pollution levels
-                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
+                </div>
+              </Link>
+              <Link
+                href="/pressure"
+                className="group relative overflow-hidden rounded-lg border p-6 hover:border-primary"
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="rounded-full bg-primary/10 p-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6 text-primary"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 7v5l3 3" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">Pressure</h3>
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <div className="text-2xl font-bold text-blue-500">{pressureValue.toFixed(1)} hPa</div>
+                  )}
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
+                </div>
+              </Link>
+              <Link
+                href="/wind-speed"
+                className="group relative overflow-hidden rounded-lg border p-6 hover:border-primary"
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="rounded-full bg-primary/10 p-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6 text-primary"
+                    >
+                      <path d="M9.59 0.885L7 7h5l-4.41 7.115A2 2 0 0 1 5.236 16h2.528a2 2 0 0 0 1.764-1" />
+                      <path d="M20 12h2" />
+                      <path d="M2 12h2" />
+                      <path d="M19 9h2" />
+                      <path d="M1 9h2" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">Wind Speed</h3>
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <div className="text-2xl font-bold text-green-500">{windSpeedValue.toFixed(1)} m/s</div>
+                  )}
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
+                </div>
+              </Link>
+              <Link
+                href="/ultrasound"
+                className="group relative overflow-hidden rounded-lg border p-6 hover:border-primary"
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="rounded-full bg-primary/10 p-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6 text-primary"
+                    >
+                      <path d="M10 4H4v10h6" />
+                      <path d="M14 4h6v10h-6" />
+                      <path d="M10 15H4v4h6" />
+                      <path d="M14 15h6v4h-6" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">Ultrasound</h3>
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <div className="text-2xl font-bold text-purple-500">{ultrasoundValue.toFixed(1)} cm</div>
+                  )}
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
+                </div>
+              </Link>
+              <Link
+                href="/noise"
+                className="group relative overflow-hidden rounded-lg border p-6 hover:border-primary"
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="rounded-full bg-primary/10 p-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6 text-primary"
+                    >
+                      <path d="M11 5h2" />
+                      <path d="M11 9h2" />
+                      <path d="M11 13h2" />
+                      <path d="M11 17h2" />
+                      <path d="M7 5h2" />
+                      <path d="M7 9h2" />
+                      <path d="M7 13h2" />
+                      <path d="M7 17h2" />
+                      <path d="M15 5h2" />
+                      <path d="M15 9h2" />
+                      <path d="M15 13h2" />
+                      <path d="M15 17h2" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">Noise</h3>
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <div className="text-2xl font-bold text-amber-500">{noiseValue.toFixed(1)} dB</div>
+                  )}
+                  <p className="text-sm text-gray-500 dark:text-gray-400">readings</p>
                 </div>
               </Link>
             </div>

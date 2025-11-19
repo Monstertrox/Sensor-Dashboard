@@ -1,20 +1,19 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-interface HumiditySensorProps {
+interface WindSpeedSensorProps {
   value: number
   min: number
   max: number
 }
 
-export default function HumiditySensor({ value: initialValue, min, max }: HumiditySensorProps) {
+export default function WindSpeedSensor({ value: initialValue, min, max }: WindSpeedSensorProps) {
   const [value, setValue] = useState(initialValue)
   const [inputValue, setInputValue] = useState(initialValue.toString())
 
@@ -46,36 +45,41 @@ export default function HumiditySensor({ value: initialValue, min, max }: Humidi
     }
   }
 
-  // Calculate fill percentage for the humidity indicator
-  const fillPercentage = ((value - min) / (max - min)) * 100
+  // Calculate color based on wind speed
+  const getWindSpeedColor = (speed: number) => {
+    if (speed < 2) return "#22c55e" // Calm - green
+    if (speed < 5) return "#84cc16" // Light breeze - lime
+    if (speed < 10) return "#f97316" // Moderate wind - orange
+    if (speed < 15) return "#ef4444" // Strong wind - red
+    return "#991b1b" // Very strong - dark red
+  }
+
+  const windSpeedColor = getWindSpeedColor(value)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Humidity Sensor</CardTitle>
-        <CardDescription>Current humidity reading with manual adjustment</CardDescription>
+        <CardTitle>Wind Speed Sensor</CardTitle>
+        <CardDescription>Current wind speed reading with manual adjustment</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex flex-col items-center justify-center space-y-2">
-          <div className="relative w-32 h-32 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full border-8 border-muted overflow-hidden">
-              <div
-                className="absolute bottom-0 w-full bg-blue-500 transition-all duration-500"
-                style={{ height: `${fillPercentage}%` }}
-              ></div>
-            </div>
-            <div className="relative z-10 text-4xl font-bold">{value.toFixed(1)}</div>
+          <div
+            className="flex items-center justify-center rounded-full w-32 h-32 border-8 transition-all duration-500"
+            style={{ borderColor: windSpeedColor }}
+          >
+            <div className="text-4xl font-bold">{value.toFixed(1)}</div>
           </div>
-          <div className="text-sm text-muted-foreground">%</div>
+          <div className="text-sm text-muted-foreground">m/s</div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-medium mb-2">Adjust Humidity</h4>
+            <h4 className="text-sm font-medium mb-2">Adjust Wind Speed</h4>
             <Slider value={[value]} min={min} max={max} step={0.1} onValueChange={handleSliderChange} />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>{min}%</span>
-              <span>{max}%</span>
+              <span>{min} m/s</span>
+              <span>{max} m/s</span>
             </div>
           </div>
 
@@ -99,7 +103,7 @@ export default function HumiditySensor({ value: initialValue, min, max }: Humidi
       <CardFooter className="text-xs text-muted-foreground">
         <div className="w-full flex justify-between">
           <span>
-            Range: {min}% - {max}%
+            Range: {min} - {max} m/s
           </span>
           <span>Last updated: {new Date().toLocaleTimeString()}</span>
         </div>

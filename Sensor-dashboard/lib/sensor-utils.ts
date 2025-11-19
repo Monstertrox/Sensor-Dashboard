@@ -13,6 +13,10 @@ export function mapToDbSensorType(appType: AppSensorType): string {
     temperature: "temperature",
     humidity: "humedad",
     air_quality: "calidad",
+    pressure: "presion",
+    wind_speed: "velocidad_viento",
+    ultrasound: "ultrasonido",
+    noise: "ruido",
   }
   return mapping[appType] || appType
 }
@@ -73,6 +77,46 @@ export function generateFallbackData(): SensorReading[] {
       value: Math.round(20 + Math.random() * 80 + Math.sin(i * 0.2) * 15),
       timestamp: timestamp.toISOString(),
       device_id: "nodo_air_001",
+      location: "Sensor Network",
+    })
+
+    // Presión: 990-1020 hPa
+    data.push({
+      id: data.length + 1,
+      sensor_type: "pressure",
+      value: Math.round((1005 + Math.random() * 15 + Math.sin(i * 0.4) * 5) * 10) / 10,
+      timestamp: timestamp.toISOString(),
+      device_id: "nodo_pressure_001",
+      location: "Sensor Network",
+    })
+
+    // Velocidad del viento: 0-15 m/s
+    data.push({
+      id: data.length + 1,
+      sensor_type: "wind_speed",
+      value: Math.round((2 + Math.random() * 12 + Math.abs(Math.sin(i * 0.3)) * 5) * 10) / 10,
+      timestamp: timestamp.toISOString(),
+      device_id: "nodo_wind_001",
+      location: "Sensor Network",
+    })
+
+    // Ultrasonido (distancia): 10-500 cm
+    data.push({
+      id: data.length + 1,
+      sensor_type: "ultrasound",
+      value: Math.round((150 + Math.random() * 200 + Math.sin(i * 0.6) * 50) * 10) / 10,
+      timestamp: timestamp.toISOString(),
+      device_id: "nodo_ultrasound_001",
+      location: "Sensor Network",
+    })
+
+    // Ruido: 40-100 dB
+    data.push({
+      id: data.length + 1,
+      sensor_type: "noise",
+      value: Math.round((50 + Math.random() * 40 + Math.sin(i * 0.2) * 10) * 10) / 10,
+      timestamp: timestamp.toISOString(),
+      device_id: "nodo_noise_001",
       location: "Sensor Network",
     })
   }

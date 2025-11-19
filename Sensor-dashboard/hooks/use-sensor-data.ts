@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchSensorData, fetchSensorDataByType } from "@/lib/api"
-import type { SensorData, SensorReading } from "@/lib/types"
+import type { SensorData, SensorReading, AppSensorType } from "@/lib/types"
 
 // Hook para obtener todos los datos de sensores
 export function useSensorData() {
@@ -14,8 +14,7 @@ export function useSensorData() {
   })
 }
 
-// Hook para obtener datos de un tipo específico de sensor
-export function useSensorDataByType(sensorType: "temperature" | "humidity" | "air_quality") {
+export function useSensorDataByType(sensorType: AppSensorType) {
   return useQuery({
     queryKey: ["sensors", sensorType],
     queryFn: () => fetchSensorDataByType(sensorType),
@@ -26,8 +25,7 @@ export function useSensorDataByType(sensorType: "temperature" | "humidity" | "ai
   })
 }
 
-// Hook para procesar datos de sensor en el formato requerido por los componentes
-export function useProcessedSensorData(sensorType: "temperature" | "humidity" | "air_quality"): {
+export function useProcessedSensorData(sensorType: AppSensorType): {
   data: SensorData | undefined
   isLoading: boolean
   error: Error | null
@@ -57,7 +55,7 @@ export function useProcessedSensorData(sensorType: "temperature" | "humidity" | 
 }
 
 // Función auxiliar para obtener valores mínimos por tipo de sensor
-function getMinValue(sensorType: "temperature" | "humidity" | "air_quality"): number {
+function getMinValue(sensorType: AppSensorType): number {
   switch (sensorType) {
     case "temperature":
       return -10
@@ -65,13 +63,21 @@ function getMinValue(sensorType: "temperature" | "humidity" | "air_quality"): nu
       return 0
     case "air_quality":
       return 0
+    case "pressure":
+      return 950
+    case "wind_speed":
+      return 0
+    case "ultrasound":
+      return 0
+    case "noise":
+      return 30
     default:
       return 0
   }
 }
 
 // Función auxiliar para obtener valores máximos por tipo de sensor
-function getMaxValue(sensorType: "temperature" | "humidity" | "air_quality"): number {
+function getMaxValue(sensorType: AppSensorType): number {
   switch (sensorType) {
     case "temperature":
       return 50
@@ -79,6 +85,14 @@ function getMaxValue(sensorType: "temperature" | "humidity" | "air_quality"): nu
       return 100
     case "air_quality":
       return 400
+    case "pressure":
+      return 1050
+    case "wind_speed":
+      return 30
+    case "ultrasound":
+      return 500
+    case "noise":
+      return 120
     default:
       return 100
   }

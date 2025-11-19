@@ -4,8 +4,8 @@ import Link from "next/link"
 interface SensorLayoutProps {
   title: string
   description: string
-  currentValue: number
-  unit: string
+  currentValue?: number
+  unit?: string
   lastUpdated?: string
   children: React.ReactNode
 }
@@ -36,6 +36,18 @@ export default function SensorLayout({
               <Link href="/air-quality" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 Air Quality
               </Link>
+              <Link href="/pressure" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Pressure
+              </Link>
+              <Link href="/wind-speed" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Wind Speed
+              </Link>
+              <Link href="/ultrasound" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Ultrasound
+              </Link>
+              <Link href="/noise" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Noise
+              </Link>
             </nav>
           </div>
           <div className="flex md:hidden">
@@ -44,24 +56,48 @@ export default function SensorLayout({
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
-            <nav className="flex items-center space-x-2 md:hidden">
+            <nav className="flex items-center space-x-2 md:hidden overflow-x-auto">
               <Link
                 href="/temperature"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
               >
-                Temperature
+                Temp
               </Link>
               <Link
                 href="/humidity"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
               >
-                Humidity
+                Humid
               </Link>
               <Link
                 href="/air-quality"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
               >
-                Air Quality
+                Air
+              </Link>
+              <Link
+                href="/pressure"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+              >
+                Press
+              </Link>
+              <Link
+                href="/wind-speed"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+              >
+                Wind
+              </Link>
+              <Link
+                href="/ultrasound"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+              >
+                Ultra
+              </Link>
+              <Link
+                href="/noise"
+                className="px-3 py-2 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+              >
+                Noise
               </Link>
             </nav>
           </div>
@@ -75,14 +111,18 @@ export default function SensorLayout({
                 <h1 className="text-3xl font-bold tracking-tighter">{title}</h1>
                 <p className="text-gray-500 dark:text-gray-400">{description}</p>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="text-4xl font-bold">{currentValue}</div>
-                <div className="text-2xl text-gray-500 dark:text-gray-400">{unit}</div>
-              </div>
-              {lastUpdated && (
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Last updated: {new Date(lastUpdated).toLocaleString()}
-                </div>
+              {currentValue !== undefined && unit && (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <div className="text-4xl font-bold">{currentValue}</div>
+                    <div className="text-2xl text-gray-500 dark:text-gray-400">{unit}</div>
+                  </div>
+                  {lastUpdated && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Last updated: {new Date(lastUpdated).toLocaleString()}
+                    </div>
+                  )}
+                </>
               )}
             </div>
             <div className="mt-8">{children}</div>
