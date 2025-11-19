@@ -82,7 +82,7 @@ export default function HomePageContent() {
                   Sensor Monitoring Systemmm
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Monitor your environmental sensors in real-time. View temperature, humidity, and air quality data.
+                  Monitor your environmental sensoresss in real-time. View temperature, humidity, and air quality data.
                 </p>
               </div>
               {!isLoading && (
